@@ -1,0 +1,1225 @@
+************CREAR TABLA******************************
+
+CREATE TABLE productos (
+    id_producto INT PRIMARY KEY,    -- Identificador único para cada producto
+    nombre VARCHAR(100),            -- Nombre del producto
+    precio DECIMAL(10, 2),          -- Precio del producto (hasta 10 dígitos, 2 decimales)
+    cantidad INT                    -- Cantidad disponible en stock
+);
+
+
+*************INSERTART ELEMENTOS****************************************
+
+INSERT INTO productos (id_producto, nombre, precio, cantidad)
+VALUES
+(1, 'Laptop', 899.99, 10),   -- Producto 1: Laptop
+(2, 'Teclado', 49.99, 50),   -- Producto 2: Teclado
+(3, 'Ratón', 29.99, 100);   -- Producto 3: Ratón
+
+*************OPERADORES EN EL SELECT*************
+
++: Sumar
+-: Restar
+*: Multiplicar
+/: Dividir
+%: Resto de la división (Módulo)
+^: Exponente
+|/: Raíz cuadrada
+@: Valor absoluto
+|: Une dos cadenas (concatenación).
+CONCAT(): Une dos cadenas (concatenación).
+LOWER(): Convierte la cadena a minúsculas.
+LENGTH(): Devuelve el número de caracteres en una cadena.
+UPPER(): Convierte la cadena a mayúsculas.
+
+
+/SELECT name, population/area AS density FROM cities;
+/SELECT name || ', ' || country AS location FROM cities;
+/SELECT CONCAT(UPPER(name), ', ', country) AS location FROM cities;
+/SELECT CONCAT(UPPER(name, ', ', country)) AS location FROM cities;
+
+************WHERE comparison MATH Operators**********
+
+= : ¿Son los valores iguales?
+> : ¿El valor de la izquierda es mayor?
+< : ¿El valor de la izquierda es menor?
+>= : ¿El valor de la izquierda es mayor o igual?
+<= : ¿El valor de la izquierda es menor o igual?
+<> : ¿Los valores no son iguales?
+!= : ¿Los valores no son iguales?
+BETWEEN : ¿El valor está entre dos valores?
+IN : ¿El valor está presente en una lista?
+NOT IN : ¿El valor NO está presente en una lista?
+
+
+/SELECT name, price
+FROM products
+WHERE price BETWEEN 50 AND 200;
+
+/SELECT name, price
+FROM products
+WHERE name IN ('Laptop', 'Teclado', 'Ratón');
+
+/SELECT name, price
+FROM products
+WHERE name NOT IN ('Laptop', 'Teclado') 
+AND price > 50;      <---- AND: cuando se pone AND debe cumplir ambas condiciones
+
+/SELECT name, price
+FROM products
+WHERE name NOT IN ('Laptop', 'Teclado')
+OR price > 50;  <---- OR: Cuando usas OR en SQL, cada condición se evalúa individualmente y si una de las condiciones es verdadera, el registro se incluirá en el resultado
+
+
+*************** OPERACIONES EN EL WHERE ************
+
+SELECT name, population/area AS population_density
+FROM cities
+WHERE population/area > 6000
+
+primeramente ese ejecuta FROM, luego WHERE, y luego SELECT, entonces los registros resultantes MOSTRADOS
+seran unicamente >6000, 
+
+
+*************** UPDATE RECORDS/ROWS ************
+UPDATE cities
+SET population = 39505000
+WHERE name='Tokyo';
+
+
+*************** DELETE RECORDS/ROWS ************
+DELETE FROM cities WHERE name='Tokyo'
+DELETE FROM cities WHERE name <> 'Tokyo'
+
+
+
+
+
+*************** PRIMARY KEY - FOREIGN KEY ************
+CREATE TABLE orders (
+    id_order SERIAL PRIMARY KEY,       -- Clave primaria autoincremental
+    id_customer INT,                   -- Clave foránea
+    order_date DATE,
+    amount DECIMAL(10, 2),
+    FOREIGN KEY (id_customer)          -- Clave foránea que referencia a customers
+        REFERENCES customers(id_customer)
+);
+
+
+************CONSTRAINTS AROUND DELETION **************
+ON DELETE RESTRICT: No permite eliminar si hay registros dependientes. Lanza un error.
+ON DELETE NO ACTION: Similar a RESTRICT, pero sin comprobación automática. Lanza un error.
+ON DELETE CASCADE: Elimina los registros relacionados automáticamente. Elimina la foto también.
+ON DELETE SET NULL: Establece los valores relacionados a NULL. Hace el user_id de la foto NULL.
+ON DELETE SET DEFAULT: Establece un valor por defecto. Asigna el valor predeterminado al user_id de la foto.
+
+/CREATE TABLE photos (        
+    photo_id SERIAL PRIMARY KEY,   
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,  <-------- UNA FORMA DE ESCRIBIR FOREIGN KEYS
+    photo_url VARCHAR(255)
+);
+
+*Ejemplo con ON DELETE CASCADE  <--------------
+/CREATE TABLE photos (                
+    photo_id SERIAL PRIMARY KEY,   
+    user_id INT,                  
+    photo_url VARCHAR(255),
+    FOREIGN KEY (user_id)          <-------- OTRA FORMA DE ESCRIBIR FOREIGN KEYS 
+        REFERENCES users(id)
+        ON DELETE CASCADE         < -----------ON DELETE CASCADE
+);
+
+*Ejemplo con ON DELETE NULL      <--------------
+/CREATE TABLE photos (                
+    photo_id SERIAL PRIMARY KEY,   
+    user_id INT,                  
+    photo_url VARCHAR(255),
+    FOREIGN KEY (user_id)          <-------- OTRA FORMA DE ESCRIBIR FOREIGN KEYS 
+        REFERENCES users(id)
+        ON DELETE NULL         < -----------ON DELETE CASCADE
+);
+
+
+*************4 TIPOS DE JOINS*************
+
+-- INNER JOIN (o simplemente JOIN)
+-- Devuelve solo las filas que tienen coincidencias en ambas tablas.
+SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.id;
+
+-- LEFT JOIN (o LEFT OUTER JOIN)
+-- Devuelve todas las filas de la tabla izquierda y las filas coincidentes de la tabla derecha. 
+-- Si no hay coincidencia, se devuelve NULL en la tabla de la derecha.
+SELECT * FROM table1 LEFT JOIN table2 ON table1.id = table2.id;
+
+-- RIGHT JOIN (o RIGHT OUTER JOIN)
+-- Devuelve todas las filas de la tabla derecha y las filas coincidentes de la tabla izquierda. 
+-- Si no hay coincidencia, se devuelve NULL en la tabla de la izquierda.
+SELECT * FROM table1 RIGHT JOIN table2 ON table1.id = table2.id;
+
+-- FULL JOIN (o FULL OUTER JOIN)
+-- Devuelve todas las filas cuando hay una coincidencia en cualquiera de las tablas. 
+-- Si no hay coincidencia, se devuelve NULL en la tabla que no tiene la coincidencia.
+SELECT * FROM table1 FULL JOIN table2 ON table1.id = table2.id;
+
+/////////////////////////////////EJERCICIO 1/////////////////////////////////////
+CREATE TABLE photos (
+    id SERIAL PRIMARY KEY,           -- Clave primaria autoincremental
+    url VARCHAR(255),                 -- URL de la foto
+    user_id INT,                     -- ID del usuario propietario de la foto
+    FOREIGN KEY (user_id)            -- Clave foránea que hace referencia a `user_id` en `users`
+        REFERENCES users(id)
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,           -- Clave primaria autoincremental
+    contents TEXT,                   -- Contenido del comentario
+    user_id INT,                     -- ID del usuario que hizo el comentario
+    photo_id INT,                    -- ID de la foto asociada
+    FOREIGN KEY (user_id)            -- Clave foránea que hace referencia a `user_id` en `users`
+        REFERENCES users(id),
+    FOREIGN KEY (photo_id)           -- Clave foránea que hace referencia a `id` en `photos`
+        REFERENCES photos(id)
+);
+
+
+USUARIOS QUE COMENTARON EN SUS PROPIAS FOTOS <<-----
+SELECT url, contents
+FROM comments
+JOIN photos ON photos.id=comments.photo_id
+WHERE comments.user_id=photos.user_id;
+
+
+/////////////////////////////////EJERCICIO 1.2 - continuacion/////////////////////////////////////
+ahora hace un tercer join, el cual me pide el nombre del usuario que creo el comentario y la foto
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,           -- Clave primaria autoincremental
+    username VARCHAR(100) NOT NULL   -- Nombre de usuario (no puede ser NULL)
+);
+
+
+SELECT url, contents,username
+FROM comments
+JOIN photos ON photos.id=comments.photo_id
+JOIN users ON users.id=comments.user_id AND users.id=photos.user_id;
+
+
+NOTA: en el EJERCICIOS 1 utilize WHERE para comparar user_id de ambas tablas
+      en el ejercicios 1.2 utilize 2 JOINS para comparar y filtrar en las 3 tablas
+
+
+*************AGREGGATE FUNCTIONS*************
+
+COUNT(): Devuelve el número de valores en un grupo de valores.
+Uso: COUNT(column_name)
+
+SUM(): Devuelve la suma de un grupo de números.
+Uso: SUM(column_name)
+
+AVG(): Devuelve el promedio de un grupo de números.
+Uso: AVG(column_name)
+
+MIN(): Devuelve el valor mínimo de un grupo de números.
+Uso: MIN(column_name)
+
+MAX(): Devuelve el valor máximo de un grupo de números.
+Uso: MAX(column_name)
+
+
+/Operan sobre columnas completas
+
+/No puedes mezclar columnas normales con funciones agregadas sin GROUP BY      <----
+SELECT id, MAX(id) FROM comments;                                           <--- id AQUI ESTA MAL
+
+/Cuando usas una función agregada, el resultado es siempre 1 solo valor
+SELECT MAX(id) FROM comments;
+
+/Se usan mucho junto con GROUP BY
+Porque GROUP BY divide los datos en grupos, y el agregado calcula sobre cada grupo.
+SELECT user_id, COUNT(*) 
+FROM comments 
+GROUP BY user_id;
+
+
+/No te olvides del orden de ejecución
+
+WHERE → filtra antes del agregado
+GROUP BY → agrupa
+HAVING → filtra después del agregado
+SELECT → muestra resultados
+
+/Agregados ignoran NULL (excepto COUNT(*))
+Ejemplo: si hay valores NULL en price:
+
+SUM(price) no suma los NULL
+AVG(price) tampoco los considera
+COUNT(price) no los cuenta
+pero COUNT(*) sí cuenta la fila aunque el valor sea NULL
+
+******************************ORDEN DE OPERACIONES********************
+
+FROM
+JOIN
+WHERE
+GROUP BY
+HAVING
+
+***********************HAVING***********************
+
+
+Find the number of comments for each photo where the photo_id is less than 3 and the photo
+has more than 2 comments
+
+
+SELECT photo_id, COUNT(*)
+FROM comments
+WHERE photo_id<3
+GROUP BY photo_id
+HAVING COUNT(*)>2;
+
+*******************SORTING*************************
+
+SELECT * 
+FROM products
+ORDER BY price ASC;   <--- es el default
+
+SELECT * 
+FROM products
+ORDER BY price DESC;
+
+
+SELECT * 
+FROM products
+ORDER BY price, weight ASC;  <------- ordenar por 2 columnas ASC
+
+SELECT * 
+FROM products
+ORDER BY price, weight DESC;  <------- ordenar por 2 columnas DESC
+
+
+
+************OFFSET - LIMIT***************************************
+
+OFFSET - saltea registros
+LIMIT - limita cantidad de registros a ser recibidos
+funcionan tanto limit first o offset first, pero por convencion se usa LIMIT y despues OFFSET
+
+SELECT *
+FROM users
+OFFSET 40;   <--- saltea 40 registros
+
+
+SELECT *
+FROM users
+LIMIT 5;   <--- solo trae 5 registros
+
+
+SELECT *
+FROM products
+ORDER BY price DESC  
+LIMIT 5;                <--- 5 productos mas caros
+
+
+SELECT *
+FROM products
+ORDER BY price DESC  
+LIMIT 5                
+OFFSET 1;               <--- 5 productos mas caros, salteando el 1er registro
+
+*******UNION - UNION ALL*******************************************************
+UNION: junta resultados de 2 queries, registros duplicados son fusionados
+UNION ALL: junta resultados de 2 queries, registros duplicados NO SON FUSIONADOS
+Avcs no se usan parentesis entre unions pq da conflicto con ORDER BY, LIMIT, ETC
+
+REQUISITO
+1. Deben tener los mismos nombres de columnas en el SELECT!
+2. Deben tener el mismo tipo de data en las columanas, osea ambas columnas deben estar ordenadas, ejemplo, daria error SELECT name,price UNION SELECT price,name
+
+
+
+Find the 4 products with the highest price and the 4 products with the highest
+price/weight ratio
+
+(SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 4)
+UNION                            <--- junta el resulado de ambas queries
+(SELECT *                             OJO: registros duplicados son fusionados
+FROM products
+ORDER BY price/weight DESC
+LIMIT 4);
+
+
+(SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 4)
+UNION ALL                        <--- junta el resulado de ambas queries
+(SELECT *                             OJO: registros duplicados NO SON fusionados
+FROM products
+ORDER BY price/weight DESC
+LIMIT 4);
+
+************INTERSECT**************************************************
+Encuentra registros que hay en ambas queries
+
+(SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 4)
+ÌNTERSECT                         <--- encuentra el resultado comun entre ambas queries
+(SELECT *                             
+FROM products
+ORDER BY price/weight DESC
+LIMIT 4);
+
+
+(SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 4)
+ÌNTERSECT ALL                      <--- query 1: 1 resultado
+(SELECT *                           query 2: 1 resultado entonces muestra 1 resultado   
+FROM products
+ORDER BY price/weight DESC        <--- query 1: 2 resultado
+LIMIT 4);                             query 2: 3 resultado entonces muestra 2 resultado 
+
+es el 89 del curso de postgresse para mas detalles, es medio complicado de explicar
+
+********EXCEPT******************************************************
+
+hay 2 tablas, tabla A, tabla B
+except compara tabla A vs tabla B, y el resultado es lo que HAY en
+tabla A (TABLA DE LA IZQUIERDA) PERO no hay en tabla B
+
+(SELECT *
+FROM products
+ORDER BY price DESC
+LIMIT 4)
+EXCEPT                         
+(SELECT *                             
+FROM products
+ORDER BY price/weight DESC
+LIMIT 4);
+ 
+<--- el reslutado es lo que hay en la tabla de la izq y NO HAY EN LA TABLA DE LA DERECHA
+*******
+*******subQuery************************************************
+
+List the name and price of all products that are more expensive
+than all products in the 'Toys'department
+
+SELECT name, price
+FROM products
+WHERE price > (SELECT MAX(price) FROM products WHERE department='Toys');
+
+
+******subquery en el SELECT*******************************************************
+
+SELECT <-- solo permite 1 valor como subquery
+FROM
+WHERE
+
+ejemplo. EN estos ejemplos, aunque solo venga 1 valor, se repiten las rows
+         es util si queres hacer una operacion matematica vs esa row
+         MIRAR EL 3ER EJEMPLO
+
+    SELECT name, price,( SELECT MAX(price) FROM products )
+    FROM products
+    WHERE price > 867;
+
+    SELECT name, price,( SELECT price FROM products WHERE id=3 ) AS id_3_price
+    FROM products
+    WHERE price > 867;`
+
+Ejemplo 3:
+    SELECT name, price, price/ (SELECT MAX(price) FROM phones) AS price_ratio
+
+
+*********subquery en el FROM*****************************************************
+SELECT 
+FROM   AS p   <-- siempre se le tiene que colocar un ALIAS
+WHERE
+
+Requisitos
+1. las columnas del OUTER SELECT deben ser 'COMPATIBLES'  con las del INNER SELECT, osea las mismas.
+2. el OUTER FROM debe tener un ALIAS
+
+Ejemplo:
+        SELECT name, price_weight_ratio
+        FROM (
+            SELECT name, price / weight AS price_weight_ratio
+            FROM products
+        ) AS p
+        WHERE price_weight_ratio > 5;
+
+
+        SELECT *                 
+        FROM (SELECT MAX(price)
+        FROM products) AS p;
+        <--- si quisiera nombrar aqui la columna, debo renombrar el select del INNER SELECT con AS
+*******subquery con JOIN*******************************************************
+
+Requisitos
+1. el OUTER FROM debe tener un ALIAS
+ 
+
+SELECT first_name
+FROM users
+JOIN (
+    SELECT user_id FROM orders WHERE product_id = 3
+) AS o                                            <--- obligatorio poner un alias AS
+ON o.user_id=users.id:
+
+
+***********subquery con WHERE***************************************************
+En este ejemplo se podria haber usado tambien un join
+Avcs en lugar del join se puede utilizar where y es mas facil de leer
+
+SELECT id
+FROM orders
+WHERE product_id IN (
+    SELECT id FROM products WHERE price / weight >50
+);
+
+✅ Operadores que esperan UN SOLO VALOR (single value)
+
+> → single value
+< → single value
+>= → single value
+<= → single value
+= → single value
+<> o != → single value
+
+✅ Operadores que esperan UNA SOLA COLUMNA (single column)
+IN / NOT IN
+IN → single column
+NOT IN → single column
+
+
+✅ Operadores con ALL / ANY / SOME (también esperan single column)
+
+> ALL → single column
+< ALL → single column
+>= ALL → single column
+<= ALL → single column
+= ALL → single column
+<> ALL → single column
+> ANY → single column
+< ANY → single column
+>= ANY → single column
+<= ANY → single column
+= ANY → single column
+<> ANY → single column
+(SOME es sinónimo exacto de ANY.)
+
+Ejemplo:
+    SELECT name
+    FROM products
+    WHERE price > ( SELECT AVG(price) FROM products);   
+
+
+    SELECT name, department, price
+    FROM products
+    WHERE price > ALL (SELECT price FROM products WHERE department='Industrial'); 
+    <-----products los cuales el precio sea mayor que todos los del subquery
+
+    SELECT name, department, price            
+    FROM products
+    WHERE price > SOME (        <--price es mayor que al menos 1 producto del subquery
+        SELECT price
+        FROM products
+        WHERE department='Industrial'
+    );                                 
+
+Ejemplo
+show the name, department, and price of the most expensive
+product in each department
+
+    SELECT name, department, price
+    FROM products AS p1
+    WHERE p1.price = ( 
+        SELECT MAX(price) 
+        FROM products AS p2 
+        WHERE p2.deparment=p1.department
+    );
+
+ Ejemplo
+ without using a join or a group by, print the number of orders for each product
+
+    SELECT p1.name, (SELECT COUNT(*) 
+                    FROM orders AS o1 
+                     WHERE o1.product_id=p1.id) AS num_orders
+    FROM products AS p1;
+<----interesante que uso como un FOR, la subquery para contar cuantos pedidos del productos existen
+**********SELECT SIN FROM****************************************************
+solo es posible si la subquery solo devuelve 1 valor
+interesante si queres seleccionar 1 valor de diferentes tablas, aunque en el ejemplo
+use siempre la misma tabla
+
+EJEMPLO:
+        SELECT(
+                SELECT MAX(price) FROM products
+        );
+
+EJEMPLO:
+    SELECT (
+            SELECT MAX(price) FROM products
+    ) 
+    /
+    (SELECT MIN(price) FROM products 
+    );
+
+
+EJEMPLO:
+    SELECT (SELECT MAX(price) FROM products), (SELECT MIN(price) FROM products); 
+    
+**********DISTINCT****************************************************
+Te da valores unicos de una columna, es como GROUP BY, pero sin agrupar
+Interesante si hay muchos registros duplicados y queres por ejemplo el nombre
+de cada producto sin que se repita
+
+Ejemplo: 
+        SELECT DISTINCT department             <---------department unicos
+        FROM products;
+muestra todos los department que existen, solo 1 vez, no muestra duplicados
+
+Ejemplo:
+        SELECT COUNT(DISTINCT department)
+        FROM products;
+muestra la cantidad numerica de departamentos que existen
+cuantos productos tiene esta empresa?
+<-------SOLO SE PUEDE USAR COUNT(DISTINCT name) sobre 1 COLUMNA
+
+Ejemplo: 
+        SELECT DISTINCT department, name           <---------department Y name unicos
+        FROM products;
+<----- aqui puede repetir department o name, pero nunca repetir combinaciones
+<-al usar mas de 1 columna como aqui, YA NO SE PUEDE USAR COUNT(DISTINCT department,name)
+
+
+************GREATEST**************************************************
+
+SELECT GREATEST(20,10,30);   resultado 30
+
+Ejemplo
+    compute the cost to ship each item. 
+    shipping is the maximum of (weight * $2) or 30$
+
+    SELECT name, weight, GREATEST(30, 2*weight)
+    FROM products;
+
+************LEAST**************************************************
+
+SELECT LEAST(1000,20,50,100);  resultado 20
+
+Ejemplo
+    all products are on sale!
+    price is the least of the product price * 0.5 or $400
+
+    SELECT name, price, LEAST(price*0.5,400 )
+
+
+*********CASE*****************************************************
+
+print each product and its price. also print a description of the price
+if price>600 'high'
+if price>300 'medium'
+else print 'cheap'
+
+EJEMPLO 1, con else! 
+ SELECT
+    name,
+    price,
+    CASE
+        WHEN price > 600 THEN 'high'
+        WHEN price > 300 THEN 'medium'
+        ELSE 'cheap'
+    END`
+ FROM products; 
+
+ imprime
+
+ name                   price       CASE
+
+ practical shirt        999         high
+ plastic                412         medium
+
+
+
+
+EJEMPLO 2, sin else!        <---imprime NULL
+ SELECT
+    name,
+    price,
+    CASE
+        WHEN price > 600 THEN 'high'
+        WHEN price > 300 THEN 'medium'
+       
+    END`
+ FROM products; 
+
+ imprime
+
+ name                   price       CASE
+
+ practical shirt        999         high
+ plastic                412         medium
+ rubber ball            100         null    <---------imprime NULL
+
+**************************************************************
+SELECT 1.8::INTEGER AS Hola
+SELECT 1.8::REAL  AS Hola
+SELECT (1.8::REAL - 1.7::REAL)   REAL, FLOAT Y DOUBLE PRECISION, en operaciones matematicas con decimales no son exactos pero son mas rapidos
+SELECT (1.8::DECIMAL - 1.7::DECIMAL)  <--- DECIMELA y NUMERIC, son precisos, pero mas lentos para los calculos
+SELECT (1.8::NUMERIC - 1.7::NUMERIC)  <---
+
+
+
+**********valores DEFAULT Y valores NOT NULL ****************************************************
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,               <--- este dato debe siempre ser pasado 
+    department VARCHAR(50) NULL,
+    price INTEGER DEFAULT 999,              <--- si NO se pasa el valor el default value es 999
+    weight INTEGER
+)
+
+*****ALTER TABLE  SET NOT NULL;******************NOT NULL***************************************
+
+ALTER TABLE products
+ALTER COLUMN price
+SET NOT NULL;                       <-- solo funciona si ningun dato dentro de esta tabla esta como "null", en el caso de que si estuviera
+                                        osea si algun producto tuviera "null" en price, deberia tratarlo manualmente, para luego ejecutar este comando
+
+
+*****ALTER TABLE  SET DEFAULT 999;*****************DEFAULT****************************************
+
+ALTER TABLE products
+ALTER COLUMN price
+SET DEFAULT 999;                       
+
+
+**********FIND VALUES NULL ****************************************************
+
+UPDATE products
+SET price = 9999
+WHERE price IS NULL;
+
+
+
+
+*****CONSTRAINT UNIQUE*****************UNIQUE****************************************
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE,            <-- esto hace que sea imposible poner 2 nombres iguales en NAME              
+    department VARCHAR(50),
+    price INTEGER,              
+    weight INTEGER
+)
+*****ALTER TABLE para ADD UNIQUE(name);*****************UNIQUE****************************************
+
+ALTER TABLE products
+ADD UNIQUE(name);
+
+
+*****ALTER TABLE DROP CONSTRAINT;*****************DROP CONSTRAINT****************************************
+Sirve para quitar UNIQUE o tambien remover un PRIMARY KEY, que tambien es un CONSTRAINT
+ALTER TABLE products
+DROP CONSTRAINT products_name_key
+
+
+******Validacion en tablas********************************************************
+
+>,<,>=,<=,=
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE,                     
+    department VARCHAR(50),
+    price INTEGER CHECK (price > 0),                                  <--- verifica que el precio sea mayor a 0       
+    weight INTEGER
+)
+
+
+CREATE TABLE cars (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(20),
+	color VARCHAR(20) CHECK (color IN ('red', 'green', 'blue'))
+);
+
+
+********Validacion en tablas******************************************************
+>,<,>=,<=,=
+
+ALTER TABLE products
+ADD CHECK (price > 0)
+
+*****CHECK de TIMESTAMP*********************************************************
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    est_delivery TIMESTAMP NOT NULL,
+    CHECK (created_at < est_delivery)           <--- verifica que creado sea una fecha antes que delivery       
+);
+
+
+INSERT INTO orders (name, created_at, est_delivery)
+VALUES ('Shirt', '2000-NOV-20 01:00AM', '2000-NOV-25 01:00AM');
+
+
+********Ejemplo diagrama******************************************************
+
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users2 {
+  id integer [pk, increment]
+  username varchar
+}
+Table comments2 {
+  id integer [pk, increment]
+  contents varchar
+  user_id int [ref: >  users2.id]
+  post_id int [ref: >  posts2.id]
+}
+Table posts2 {
+  id integer [pk, increment]
+  title varchar
+}
+
+Table follows {
+  following_user_id integer
+  followed_user_id integer
+  created_at timestamp
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+}
+
+Table posts {
+  id integer [primary key]
+  title varchar
+  body text [note: 'Content of the post']
+  user_id integer [not null]
+  status varchar
+  created_at timestamp
+}
+
+Ref user_posts: posts.user_id > users.id // many-to-one
+
+Ref: users.id < follows.following_user_id
+
+Ref: users.id < follows.followed_user_id
+
+**********SHOW data_directory;*************************************************
+Para qué se usa
+Se usa para consultar una opción de configuración interna de PostgreSQL.
+SHOW sirve únicamente para leer valores, no para modificar nada.
+
+Qué muestra
+Muestra la ruta exacta en el sistema donde PostgreSQL guarda los datos reales de la base:
+
+
+SHOW data_directory;
+
+SELECT oid, datname        <---<---<---<---<--- muestra el numero que identifica todas tus bases de datos que estan en postgress
+FROM pg_database
+ORDER BY oid ASC;
+
+
+SELECT  * FROM pg_class;      <---<---<---<--- muestra el nombre del archivo (que va a ser un numero) A CUAL PERTENECE cada tabla, por ejemplo, USERS en mi pc es oid 24920
+
+***********CREAR INDEX***************************************************
+
+-users     <--- es el nombre de la tabla
+-username  <--- es la columna en el cual se creara el indice
+
+
+CREATE INDEX ON users (username);  
+
+
+***********CREAR INDEX CON NOMBRE***************************************************
+
+-naming convention  <------ suele ser TABLA_NOMBREDECOLUMNA_IDX
+
+CREATE INDEX users_username_idx ON users (username);       <--- se coloca en medio de la palabra "INDEX" y "ON"
+                                                                en este caso el nombre creado es (users_username_idx)
+*********BORRAR INDEX*****************************************************
+
+DROP INDEX users_username_idx;
+
+********EXPLAIN ANALYZE******************************************************
+
+EXPLAIN ANALYZE SELECT *
+FROM users
+WHERE username='Emil30';
+
+*************PARA VER EL TAMAÑO DE LOS ARCHIVOS CREADOS PARA GUARDAR LOS INDEXES*************************************************
+
+SELECT pg_size_pretty(pg_relation_size('users_username_idx'))
+
+*********COMO LISTAR TODOS LOS INDEXES QUE EXISTEN EN UNA DATABASE*****************************************************
+
+indexes que son PRIMARY KEY, UNIQUE, automaticamente tienen index, aunque no se vean en el pgadmin bajo "indexes"
+**************************************************************
+SHOW THE USERNAME OF USERS WHO WERE TAGGED IN A CAPTION OR PHOTO BEFORE
+JANUARY 7TH, 2010
+
+
+SELECT users.username, tags.created_at
+FROM users
+JOIN (
+    SELECT user_id, created_at FROM caption_tags
+    UNION ALL                         <-- con la palabra ALL no borra duplicados
+    SELECT user_id, created_at FROM photo_tags
+) AS tags ON tags.user_id=users.id        <-- le crea un alias "tags" y luego ya lo usa inmediatamente para el JOIN ON       
+WHERE tags.created_at < '2010-01-07';
+
+
+**************   COMMON TABLE EXPRESSION---- CTE    ************************************************
+
+Se define el nombre de la tabla entre las palabras WITH......AS
+
+WITH tags AS (
+    SELECT user_id, created_at FROM caption_tags     <--- en vez de renombrar despues del JOIN, ya se renombra primeramente
+    UNION ALL                                             y luego se utiliza 'tags' como una tabla en el codigo principal o
+    SELECT user_id, created_at FROM photo_tags            main query,  que esta debajo de esto
+)
+
+
+---main query
+
+SELECT username, tags.created_at
+FROM users
+JOIN tags ON tags.user_id=users.id
+WHERE tags.created_at <'2010-01-07';
+
+
+
+************    RECURSIVE COMMON TABLE EXPRESSION  CTE   **************************************************
+212 ES EL NUMERO DE CLASSE DE POSTGRESS PARA REPARASAR
+
+
+WITH RECURSIVE countdown(val) AS (      <--- countdown es la tabla, val es el valor
+    SELECT 3 AS val                 <--- valor inicial, seteo que val=3
+    UNION
+    SELECT val - 1 FROM countdown WHERE val > 1
+)
+SELECT * 
+FROM countdown; 
+
+
+***************RECURSIVE COMMON TABLE EXPRESIONS ***********************************************
+
+WITH RECURSIVE suggestions(leader_id, follower_id, depth) AS (
+		SELECT leader_id, follower_id, 1 AS depth
+		FROM followers
+		WHERE follower_id = 1000
+  	UNION
+	    SELECT followers.leader_id, followers.follower_id, depth+1
+		FROM followers
+		JOIN suggestions ON suggestions.leader_id = followers.follower_id
+		WHERE depth < 3
+)
+SELECT DISTINCT users.id, users.username
+FROM suggestions
+JOIN users ON users.id = suggestions.leader_id
+WHERE depth > 1
+LIMIT 30;
+
+
+
+*********INSERT INTO*****************************************************
+
+insertar datos en una tabla atravez del resultado de un SELECT
+sirve para hacer MERGE de dos TABLAS
+
+
+CREATE TABLE tags(
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH ZONE DEFAULT CURRENT_TIMESTAMP,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    x INTEGER,
+    y integer
+);
+
+INSERT INTO tags(created_at, updated_at, user_id, post_id, x, y)
+SELECT created_at, updated_at, user_id, post_id, x, y
+FROM photo_tags;
+
+
+INSERT INTO tags(created_at, updated_at, user_id, post_id, x, y)
+SELECT created_at, updated_at, user_id, post_id
+FROM caption_tags;
+
+
+**********CREATE VIEWS****************************************************
+
+
+
+CREATE VIEW tags AS (
+    SELECT id, created_at, user_id, post_id, 'photo_tag' AS type FROM photo_tags
+    UNION ALL
+    SELECT id, created_at, user_id, post_id, 'caption_tag' AS type FROM caption_tags
+    
+);
+
+
+CUANDO UTILIZAR VIEWS? EJEMPLO!
+
+    SELECT username, COUNT(*)
+    FROM users
+    JOIN (
+        SELECT user_id FROM photo_tags          <--- en vez de juntar las tablas asi, o usar COMMON TABLE EXPRESSION
+        UNION ALL                                    SE PUEDE UTILIZAR VIEW
+        SELECT user_id FROM caption_tags
+    ) AS tags ON tags.user_id=users.id
+    GROUP BY username
+    ORDER BY COUNT(*) DESC;
+
+
+
+    SELECT username, COUNT(*)
+    FROM users
+    JOIN tags AS tags ON tags.user_id=users.id
+    GROUP BY username
+    ORDER BY COUNT(*) DESC;
+
+    
+******Ejemplo de como utilizar views********************************************************
+
+
+Encuentra los primeros 1- posts mas RECIENTES!!!**
+------------------------------------------------------
+
+
+CREATE VIEW recent_posts AS (
+    SELECT *
+    FROM posts
+    ORDER BY created_at DESC                   <<-- despues de crear un VIEW lo podes utilizar en cualquier lado
+    LIMIT 10
+);
+
+
+EJEMPLO DE UTILIZAR EL VIEW YA CREADOS 
+---------------------------------------
+
+SELECT username
+FROM recent_posts
+JOIN users ON users.id=recent_posts.user_id;
+
+
+**********CHANGING VIEWS****************************************************
+*ahora en lugar de los 10 ultimos posts quiero modificar el VIEW para que me muestre los ultimos 15 posts
+
+
+CREATE OR REPLACE VIEW recent_posts AS (
+    SELECT *
+    FROM posts
+    ORDER BY created_at DESC                   
+    LIMIT 15
+);
+
+*************DELETING VIEWS*************************************************
+
+DROP VIEW recent_posts;
+
+
+
+************date_trunc**************************************************
+*redondea dia, semana, anho       
+
+
+SELECT 
+    date_trunc('week', COALESCE(posts.created_at, comments.created_at)) AS week,      <--COALESCE devuelve el valor TRUE
+    COUNT(posts.id) AS num_likes_for_posts,                             <--- este 'count' NO CUENTA los valores NULL que encuentre    
+    COUNT(comments.id) AS num_likes_for_comments
+FROM likes
+LEFT JOIN posts ON posts.id=likes.post_id
+LEFT JOIN comments ON comments.id=likes.comment_id
+GROUP BY week
+ORDER BY week 
+
+**********MATERIALIZED VIEW****************************************************
+*Es como el memo de javascript, guarda el resultado para no volver a ejecutar el codigo ya que es una operacion costosa
+*si ocurriria alguna modificacion en alguna de las tablas, habria que actualizar esto con REFRESH MATERIALIZED VIEW para no tener
+datos desactualizados
+
+
+CREATE MATERIALIZED VIEW weekly_likes AS (
+SELECT 
+    date_trunc('week', COALESCE(posts.created_at, comments.created_at)) AS week,      <--COALESCE devuelve el valor TRUE
+    COUNT(posts.id) AS num_likes_for_posts,                             <--- este 'count' NO CUENTA los valores NULL que encuentre    
+    COUNT(comments.id) AS num_likes_for_comments
+FROM likes
+LEFT JOIN posts ON posts.id=likes.post_id
+LEFT JOIN comments ON comments.id=likes.comment_id
+GROUP BY week
+ORDER BY week                 <-------detalle, aqui no va ningun punto y coma ;
+) WITH DATA;                   <-- WITH DATA, va a guardar el resultado de la operacion  <--- recien aqui va el ;
+
+********REFRESH MATERIALIZED VIEW weekly_likes******************************************************
+*Sirve para actualizar lo que ya se guardo en materialized view
+REFRESH MATERIALIZED VIEWS weekly_likes;
+
+
+**************Transaction************************************************
+hace una copia de la bd y luego o ejecuta todo el codigo o no ejecuta nada haciendo un rollback
+
+CREATE TABLE accounts(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    balance INTEGER NOT NULL
+);
+
+
+INSERT INTO accounts (name, balance)
+VALUES ('Gia',100), ('Alyson',100);
+
+
+SELECT * FROM accounts
+
+BEGIN;          <--------- esto CREA/EMPIEZA UNA Transaction
+ROLLBACK;       <--------- si hubo algun error en sintaxis es obligatorio pq entra en un estado de ABORT y no me deja mas hacer nada
+COMMIT;         <-------- si quiero grabar los cambios de la transaccion a la base de datos real
+
+
+************ALTER**************************************************
+modifica la tabla
+
+ALTER TABLE comments
+RENAME COLUMN contents TO body;
+
+
+**********MIGRATION FILE ****************************************************
+
+
+/                   MIGRATION FILE #1                        /
+--------------------------------------------------------------
+/                  UP               /   DOWN                 /
+--------------------------------------------------------------
+/                                   /                        /
+/      CREATE TABLE comments(       /                        /
+/        id SERIAL PRIMARY KEY,     / DROP TABLE comments;   /
+/        created_at TIMESTAMP,      /                        /
+/        updated_at TIMESTAMP,      /                        /
+/        contents VARCHAR(240)      /                        /
+/      );                           /                        /
+/-----------------------------------/------------------------/
+
+
+
+/                   MIGRATION FILE #2                        /
+--------------------------------------------------------------
+/                  UP               /   DOWN                 /
+--------------------------------------------------------------
+/                                   /                        /
+/          ALTER TABLE comments     /   ALTER TABLE comments /
+/          RENAME COLUMN            /   comments             /
+/            contents TO body;      /   RENAME COLUMN        /
+/                                   /      body TO contents; /
+/                                   /                        /
+/                                   /                        /
+/-----------------------------------/------------------------/
+
+
+npm init -y
+npm add --save-dev node-pg-migrate           <---- la palabra "add" es lo mismo que "install"
+npm install pg                                     la palabra -D es lo mismo que --save-dev
+
+
+-----ir a PACKAGE.JSON  (aqui agregamos "migrate"....)
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node-pg-migrate"
+  }
+
+
+--en la terminal escribir
+npm run migrate create table comments  <--- esto crea una carpeta llamada MIGRATIONS
+--dentro de MIGRATIONS, ir al archivo creado y escribir dentro de 
+
+----------------------------------------------------------------------
+export const up = (pgm) => {
+  pgm.sql(`
+    CREATE TABLE comments(
+     id SERIAL PRIMARY KEY,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     contents VARCHAR(240) NOT NULL
+    );
+    `);
+};
+
+
+export const down = (pgm) => {
+  pgm.sql(`
+    DROP TABLE comments;
+    `);
+};
+------------------------------------------------------------------------
+
+**********EJECUTAR UN MIGRATE***************************************************
+dependiendo del sistema operativo que estas corriendo y la terminal son los siguientes:
+password:password
+username:postgres
+estos se ejecutan en la terminal del vsc
+AL FINAL DICE 'UP', pero puedo reemplazarlo por 'DOWN' para hacer lo inverso 
+
+
+# MacOS with Postgres.app
+DATABASE_URL=postgres://USERNAME@localhost:5432/socialnetwork npm run migrate up <---en vez de escribir 'up' podria ser 'down'
+
+# Windows with Git Bash
+DATABASE_URL=postgres://USERNAME:PASSWORD@localhost:5432/socialnetwork npm run migrate up
+
+# Windows with CMD
+set DATABASE_URL=postgres://USERNAME:PASSWORD@localhost:5432/socialnetwork&&npm run migrate up
+
+# Windows with Powershell
+$env:DATABASE_URL="postgres://USERNAME:PASSWORD@localhost:5432/socialnetwork" ; npm run migrate up
+
+******CREATE SCHEMA********************************************************
+
+CREATE SCHEMA test;
+
+CREATE TABLE test.users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR
+)
+
+INSERT INTO test.users(username) VALUES ('jUAN'), ('aslkdjf')`
+
+
+****Mostrar Schema default de postgres**********************************************************
+*significa que primero intenta acceder por forma default a "$user"(nombre de usuario de postgress) y si no lo encuentra intenta acceder a PUBLIC (me refiero al schema, osea al intentar crear una tabla o insertar o cualquier operacion como update y delete)
+
+SHOW search_path;  <-- "$user",public                     
+
+***Cambiar el default schema de postgress*******************************************
+
+SET search_path TO test,public;          <--- con este comando se modifica
+
+
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
+**********************************************************************************
