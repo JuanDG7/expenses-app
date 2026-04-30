@@ -91,3 +91,5 @@ DROP TABLE IF EXISTS expenses;
 ------------------------------
 npm run migrate up
 Esto crea realmente la tabla en PostgreSQL.
+
+10. npm install zod

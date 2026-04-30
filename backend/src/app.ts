@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import type { Request, Response, NextFunction } from "express";
+import expensesRoutes from "./routes/expenses.routes";
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use("/images", express.static(path.join(__dirname, "..", "images")));
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+app.use("/api", expensesRoutes);
 
 // GLOBAL ERROR MIDDLEWARE
 app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {

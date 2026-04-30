@@ -1,0 +1,30 @@
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "title": "pizza",
+  "amount": 20000,
+  "category": "food",
+  "date": "2026-04-30"
+}
+
+#####################################
+GET http://localhost:8080/api/expenses
+
+
+#####################################
+GET http://localhost:8080/api/expenses/1
+
+##################################
+PUT http://localhost:8080/api/expenses/1
+Content-Type: application/json
+
+{
+  "title": "coca cola zero",
+  "amount": 16000,
+  "category": "bebida",
+  "date": "2026-04-30"
+}
+
+#####################
+DELETE http://localhost:8080/api/expenses/1
