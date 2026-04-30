@@ -28,3 +28,58 @@ Content-Type: application/json
 
 #####################
 DELETE http://localhost:8080/api/expenses/1
+
+############
+PUT http://localhost:8080/api/expenses/2
+Content-Type: application/json
+
+{
+  "title": "pizza grande"
+}
+
+### Crear expense OK
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "title": "Cena",
+  "amount": 50000,
+  "category": "Food"
+}
+
+### Error - body inválido
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "title": "",
+  "amount": -10
+}
+
+### Error - ID inválido
+GET http://localhost:8080/api/expenses/abc
+
+### Error - campo extra
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "title": "Cena",
+  "amount": 100,
+  "category": "Food",
+  "hack": "123"
+}
+
+### Update parcial OK
+PATCH http://localhost:8080/api/expenses/4
+Content-Type: application/json
+
+{
+  "amount": 99999
+}
+
+### Error - update vacío
+PATCH http://localhost:8080/api/expenses/4
+Content-Type: application/json
+
+{}

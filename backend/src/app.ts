@@ -34,12 +34,19 @@ app.get("/health", (_req, res) => {
 app.use("/api", expensesRoutes);
 
 // GLOBAL ERROR MIDDLEWARE
-app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
-  const status = error.statusCode || 500;
-  const message = error.message || "Internal server error";
-  const data = error.data;
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
 
-  res.status(status).json({ message, data });
+  if (err.name === "ZodError") {
+    return res.status(422).json({
+      message: "Error de validacion",
+      data: err.issues,
+    });
+  }
+
+  res.status(500).json({
+    message: "Internal server error",
+  });
 });
 
 export default app;

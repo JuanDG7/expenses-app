@@ -22,13 +22,13 @@ export const createExpense = async (
   next: NextFunction
 ) => {
   try {
-    const { title, amount, category, date } = req.body;
+    const { title, amount, category } = req.body;
 
     const result = await pool.query(
-      `INSERT INTO expenses (title, amount, category, date)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO expenses (title, amount, category)
+       VALUES ($1, $2, $3)
        RETURNING *`,
-      [title, amount, category, date]
+      [title, amount, category]
     );
 
     res.status(201).json({
@@ -72,14 +72,20 @@ export const updateExpense = async (
 ) => {
   try {
     const { id } = req.params;
-    const { title, amount, category, date } = req.body;
+
+    const fields = Object.keys(req.body);
+    const values = Object.values(req.body);
+
+    const setClause = fields
+      .map((field, index) => `${field} = $${index + 1}`)
+      .join(", ");
 
     const result = await pool.query(
       `UPDATE expenses
-       SET title = $1, amount = $2, category = $3, date = $4, updated_at = NOW()
-       WHERE id = $5
+       SET ${setClause}, updated_at = NOW()
+       WHERE id = $${fields.length + 1}
        RETURNING *`,
-      [title, amount, category, date, id]
+      [...values, id]
     );
 
     if (!result.rows[0]) {

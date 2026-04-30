@@ -93,3 +93,6 @@ npm run migrate up
 Esto crea realmente la tabla en PostgreSQL.
 
 10. npm install zod
+
+mkdir src/schemas src/middlewares
+touch src/schemas/expense.schema.ts src/middlewares/validate.ts
