@@ -19,7 +19,7 @@ cors → permitir conexión con frontend
 
 3. Dependencias de desarrollo
 ---------------------------------
-npm install -D typescript ts-node-dev node-pg-migrate @types/node @types/express @types/cors
+npm install -D typescript ts-node-dev node-pg-migrate @types/node @types/express @types/cors @types/pg
 
 typescript → lenguaje
 ts-node-dev → ejecutar TS con auto-reload
