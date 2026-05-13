@@ -13,21 +13,21 @@ GET http://localhost:8080/api/expenses
 
 
 #####################################
-GET http://localhost:8080/api/expenses/1
+GET http://localhost:8080/api/expenses/2
 
 ##################################
-PUT http://localhost:8080/api/expenses/1
+PATCH http://localhost:8080/api/expenses/2
 Content-Type: application/json
 
 {
-  "title": "coca cola zero",
+  "title": "coca cola zero1111111",
   "amount": 16000,
   "category": "bebida",
   "date": "2026-04-30"
 }
 
 #####################
-DELETE http://localhost:8080/api/expenses/1
+DELETE http://localhost:8080/api/expenses/2
 
 ############
 PUT http://localhost:8080/api/expenses/2
@@ -83,3 +83,6 @@ PATCH http://localhost:8080/api/expenses/4
 Content-Type: application/json
 
 {}
+
+###
+GET http://localhost:8080/api/expenses?page=1&limit=10

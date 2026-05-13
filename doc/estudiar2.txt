@@ -50,8 +50,8 @@ export const createExpense = async (
 
     const result = await pool.query(
       `INSERT INTO expenses (title, amount, category)
-        VALUES ($1, $2, $3)
-        RETURNING *`,
+       VALUES ($1, $2, $3)
+       RETURNING *`,
       [title, amount, category]
     );
 
@@ -142,7 +142,7 @@ export const deleteExpense = async (
       return res.status(404).json({ message: "Expense not found" });
     }
 
-    res.status(204).send();
+    res.json({ message: "Expense deleted" });
   } catch (err) {
     next(err);
   }

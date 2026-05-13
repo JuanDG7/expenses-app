@@ -1,11 +1,11 @@
 import app from "./app";
-
+import "dotenv/config";
 const PORT = process.env.PORT || 8080;
 
 import { pool } from "./db";
 
 pool
-  .connect()
+  .query(`SELECT NOW()`)
   .then(() => {
     console.log("Connected to PostgreSQL");
     app.listen(PORT, () => {

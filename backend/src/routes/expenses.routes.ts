@@ -12,7 +12,6 @@ import {
   updateExpenseSchema,
   expenseIdParamSchema,
 } from "../schemas/expense.schema";
-
 const router = Router();
 
 router.get("/expenses", getExpenses);
