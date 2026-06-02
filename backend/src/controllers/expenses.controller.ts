@@ -26,7 +26,7 @@ export const getExpenses = async (
     res.json({
       data: expensesResult.rows.map((row) => ({
         ...row,
-        amount: Number(row.amount),
+        amount: row.amount ? Number(row.amount) : null,
       })),
       pagination: {
         page,
@@ -46,18 +46,25 @@ export const createExpense = async (
   next: NextFunction
 ) => {
   try {
-    const { title, amount, category } = req.body;
+    const fields = Object.keys(req.body);
+    const values = Object.values(req.body);
+
+    const columns = fields.join(", ");
+
+    const placeholders = fields.map((_, index) => `$${index + 1}`).join(", ");
 
     const result = await pool.query(
-      `INSERT INTO expenses (title, amount, category)
-        VALUES ($1, $2, $3)
-        RETURNING *`,
-      [title, amount, category]
+      `
+  INSERT INTO expenses (${columns})
+  VALUES (${placeholders})
+  RETURNING *
+  `,
+      values
     );
 
     res.status(201).json({
       ...result.rows[0],
-      amount: Number(result.rows[0].amount),
+      amount: result.rows[0].amount ? Number(result.rows[0].amount) : null,
     });
   } catch (err) {
     next(err);
@@ -82,7 +89,7 @@ export const getExpenseById = async (
 
     res.json({
       ...result.rows[0],
-      amount: Number(result.rows[0].amount),
+      amount: result.rows[0].amount ? Number(result.rows[0].amount) : null,
     });
   } catch (err) {
     next(err);
@@ -118,7 +125,7 @@ export const updateExpense = async (
 
     res.json({
       ...result.rows[0],
-      amount: Number(result.rows[0].amount),
+      amount: result.rows[0].amount ? Number(result.rows[0].amount) : null,
     });
   } catch (err) {
     next(err);

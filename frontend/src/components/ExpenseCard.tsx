@@ -12,6 +12,16 @@ export function ExpenseCard({ expense, onDelete, onEdit }: ExpenseCardProps) {
       <div className="mb-4">
         <h2 className="text-xl font-semibold">{expense.title}</h2>
         <p className="text-sm text-gray-500">{expense.category}</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {expense.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="flex items-center justify-between">

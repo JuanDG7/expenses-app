@@ -1,19 +1,30 @@
 import { z } from "zod";
 // prettier-ignore
-export const createExpenseSchema = z.object({
-  title: z.string()
-    .min(1, "Title is required")
-    .max(50, "Max 50 characters"),
 
-  amount: z.coerce.number()
-    .positive("Amount must be > 0"),
+const CATEGORIES = [
+  "Comida",
+  "Salud",
+  "Trabajo",
+  "Educación",
+  "Hogar",
+  "Ocio",
+  "Transporte",
+  "Otros",
+] as const;
 
-  category: z.string()
-    .min(1, "Category is required")
-    .max(50, "Max 50 characters"),
+export const createExpenseSchema = z
+  .object({
+    title: z.string().min(1, "Title is required").max(50, "Max 50 characters"),
 
-  date: z.coerce.date().optional(), // porque en DB tiene DEFAULT
-}).strict()
+    amount: z.coerce.number().positive("Amount must be > 0").optional(),
+
+    category: z.enum(CATEGORIES).optional(),
+
+    tags: z.array(z.string().min(1).max(100)).optional(),
+
+    date: z.coerce.date().optional(), // porque en DB tiene DEFAULT
+  })
+  .strict();
 
 export const updateExpenseSchema = createExpenseSchema
   .partial()
