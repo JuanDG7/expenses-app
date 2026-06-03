@@ -5,19 +5,11 @@ import {
   getExpenses,
   updateExpense,
 } from "./api/expensesApi";
-import { ExpenseCard } from "./components/ExpenseCard";
-import type { CreateExpense, Expense, UpdateExpense } from "./types/expense";
 
-const CATEGORIES = [
-  "Comida",
-  "Salud",
-  "Trabajo",
-  "Educación",
-  "Hogar",
-  "Ocio",
-  "Transporte",
-  "Otros",
-];
+import type { CreateExpense, Expense, UpdateExpense } from "./types/expense";
+import { ExpenseForm } from "./components/ExpenseForm";
+import { ExpenseList } from "./components/ExpenseList";
+import { ExpenseFilters } from "./components/ExpenseFilters";
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -29,9 +21,9 @@ function App() {
   const [category, setCategory] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
-
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     async function loadExpenses() {
       try {
@@ -155,98 +147,47 @@ function App() {
 
   if (error) return <p>{error}</p>;
 
+  const filteredExpenses = selectedCategory
+    ? expenses.filter((expense) => expense.category === selectedCategory)
+    : expenses;
+
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
-      <h1>Gestión de gastos</h1>
+      <ExpenseForm
+        title={title}
+        setTitle={setTitle}
+        amount={amount}
+        setAmount={setAmount}
+        category={category}
+        setCategory={setCategory}
+        tags={tags}
+        setTags={setTags}
+        tagsInput={tagsInput}
+        setTagsInput={setTagsInput}
+        handleSubmit={handleSubmit}
+        handleAddTag={handleAddTag}
+        editingId={editingId}
+        setEditingId={setEditingId}
+        handleRemoveTag={handleRemoveTag}
+      />
 
-      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <input
-          className="rounded-lg border p-3"
-          type="text"
-          placeholder="Título"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-
-        <input
-          className="rounded-lg border p-3"
-          type="number"
-          placeholder="Monto"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-
-        <div>
-          {CATEGORIES.map((cat) => (
-            <button
-              type="button"
-              onClick={() => {
-                setCategory(cat);
-              }}
-              className={`rounded-lg border p-3 $ ${
-                category === cat ? "bg-black text-white" : "bg-white text-black"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-2">
+      <div className="flex gap-6">
+        {" "}
+        <div className="w-64">
           {" "}
-          <input
-            type="text"
-            value={tagsInput}
-            placeholder="Tags"
-            onChange={(e) => setTagsInput(e.target.value)}
+          <ExpenseFilters
+            setSelectedCategory={setSelectedCategory}
+            selectedCategory={selectedCategory}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
           />
-          <button
-            type="button"
-            className="rounded-lg border p-3"
-            onClick={handleAddTag}
-          >
-            Agregar Tag
-          </button>
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <button
-              type="button"
-              key={tag}
-              onClick={() => handleRemoveTag(tag)}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        <button className="rounded-lg bg-black p-3 text-white" type="submit">
-          {editingId ? "Actualizar gasto" : "Crear gasto"}
-        </button>
-        {editingId && (
-          <button
-            className="rounded-lg bg-black p-3 text-white"
-            type="button"
-            onClick={() => {
-              setEditingId(null);
-              setTitle("");
-              setAmount("");
-              setCategory("");
-            }}
-          >
-            Cancelar edición
-          </button>
-        )}
-      </form>
-
-      {expenses.map((expense) => (
-        <ExpenseCard
-          key={expense.id}
-          expense={expense}
-          onDelete={handleDelete}
-          onEdit={handleStartEdit}
+        <ExpenseList
+          filteredExpenses={filteredExpenses}
+          handleDelete={handleDelete}
+          handleStartEdit={handleStartEdit}
         />
-      ))}
+      </div>
     </main>
   );
 }
