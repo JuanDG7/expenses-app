@@ -147,9 +147,16 @@ function App() {
 
   if (error) return <p>{error}</p>;
 
-  const filteredExpenses = selectedCategory
-    ? expenses.filter((expense) => expense.category === selectedCategory)
-    : expenses;
+  const filteredExpenses = expenses.filter((expense) => {
+    const matchesCategory =
+      !selectedCategory || expense.category === selectedCategory;
+
+    const matchesSearch =
+      !searchTerm ||
+      expense.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
