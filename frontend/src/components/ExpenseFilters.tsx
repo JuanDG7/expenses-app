@@ -5,6 +5,8 @@ interface ExpenseFiltersProps {
   selectedCategory: string;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  sort: string;
+  setSort: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function ExpenseFilters({
@@ -12,19 +14,29 @@ export function ExpenseFilters({
   selectedCategory,
   searchTerm,
   setSearchTerm,
+  sort,
+  setSort,
 }: ExpenseFiltersProps) {
   return (
     <>
       <h2 className="mb-4 text-xl font-semibold">Filtros</h2>
+
       <div className="rounded-xl border p-4 shadow-sm">
-        {" "}
-        <input
-          className="mb-4 w-full rounded-lg border border-gray-300 bg-gray-50 p-3"
-          type="text"
-          placeholder="🔍 Buscar gasto..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <div className="flex">
+          <input
+            className="mb-4 w-full rounded-lg border border-gray-300 bg-gray-50 p-3"
+            type="text"
+            placeholder="🔍 Buscar gasto..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option>Mas recientes</option>
+            <option>Monto mayor</option>
+            <option>Monto menor</option>
+          </select>
+        </div>
+
         <div className="grid grid-cols-2 gap-2 ">
           <button
             type="button"

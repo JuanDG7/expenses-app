@@ -24,6 +24,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("Mas recientes");
   useEffect(() => {
     async function loadExpenses() {
       try {
@@ -158,6 +159,16 @@ function App() {
     return matchesCategory && matchesSearch;
   });
 
+  const sortedExpenses = [...filteredExpenses];
+
+  if (sort === "Monto mayor") {
+    sortedExpenses.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+  }
+
+  if (sort === "Monto menor") {
+    sortedExpenses.sort((a, b) => (a.amount || 0) - (b.amount || 0));
+  }
+  console.log(sort);
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
       <ExpenseForm
@@ -187,10 +198,12 @@ function App() {
             selectedCategory={selectedCategory}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            sort={sort}
+            setSort={setSort}
           />
         </div>
         <ExpenseList
-          filteredExpenses={filteredExpenses}
+          filteredExpenses={sortedExpenses}
           handleDelete={handleDelete}
           handleStartEdit={handleStartEdit}
         />
