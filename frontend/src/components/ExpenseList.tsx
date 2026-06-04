@@ -19,14 +19,16 @@ export function ExpenseList({
         <h2 className="font-semibold">Gastos</h2>
         <h2>Resultados: {filteredExpenses.length}</h2>
       </div>
-      {filteredExpenses.map((expense) => (
-        <ExpenseCard
-          key={expense.id}
-          expense={expense}
-          onDelete={handleDelete}
-          onEdit={handleStartEdit}
-        />
-      ))}
+      {filteredExpenses.length === 0
+        ? "No hay gastos que coincidan con los filtros."
+        : filteredExpenses.map((expense) => (
+            <ExpenseCard
+              key={expense.id}
+              expense={expense}
+              onDelete={handleDelete}
+              onEdit={handleStartEdit}
+            />
+          ))}
     </div>
   );
 }
