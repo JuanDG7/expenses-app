@@ -121,6 +121,8 @@ export function ExpenseForm({
               setTitle("");
               setAmount("");
               setCategory("");
+              setTags([]);
+              setTagsInput("");
             }}
           >
             Cancelar edición

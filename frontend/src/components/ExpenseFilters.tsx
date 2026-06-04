@@ -1,4 +1,5 @@
 import { CATEGORIES } from "../constants/categories";
+import { SORT_OPTIONS } from "../constants/sortOptions";
 
 interface ExpenseFiltersProps {
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -31,9 +32,9 @@ export function ExpenseFilters({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option>Mas recientes</option>
-            <option>Monto mayor</option>
-            <option>Monto menor</option>
+            {SORT_OPTIONS.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
           </select>
         </div>
 

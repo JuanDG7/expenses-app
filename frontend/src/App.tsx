@@ -19,9 +19,9 @@ function App() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [tagsInput, setTagsInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagsInput, setTagsInput] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("Mas recientes");
@@ -168,6 +168,29 @@ function App() {
   if (sort === "Monto menor") {
     sortedExpenses.sort((a, b) => (a.amount || 0) - (b.amount || 0));
   }
+
+  if (sort === "Mas recientes") {
+    sortedExpenses.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  }
+
+  if (sort === "Mas antiguos") {
+    sortedExpenses.sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+  }
+
+  if (sort === "A-Z") {
+    sortedExpenses.sort((a, b) => a.title.localeCompare(b.title));
+  }
+
+  if (sort === "Z-A") {
+    sortedExpenses.sort((a, b) => b.title.localeCompare(a.title));
+  }
+
   console.log(sort);
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
