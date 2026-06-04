@@ -125,6 +125,11 @@ function App() {
   }
 
   async function handleDelete(id: number) {
+    const confirmed = window.confirm(
+      "?Estas seguro de que deseas eleminar este gasto?"
+    );
+    if (!confirmed) return;
+
     try {
       await deleteExpense(id);
 
