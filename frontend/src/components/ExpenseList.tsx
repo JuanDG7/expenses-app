@@ -14,7 +14,11 @@ export function ExpenseList({
   return (
     <div className="flex-1">
       {" "}
-      <h2 className="mb-4 text-xl font-semibold">Gastos</h2>
+      <div className="mb-4 flex justify-between text-xl ">
+        {" "}
+        <h2 className="font-semibold">Gastos</h2>
+        <h2>Resultados: {filteredExpenses.length}</h2>
+      </div>
       {filteredExpenses.map((expense) => (
         <ExpenseCard
           key={expense.id}
