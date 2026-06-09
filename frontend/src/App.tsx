@@ -25,6 +25,7 @@ function App() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("Mas recientes");
+  const [tagSearch, setTagSearch] = useState<string>("");
   useEffect(() => {
     async function loadExpenses() {
       try {
@@ -161,7 +162,13 @@ function App() {
       !searchTerm ||
       expense.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return matchesCategory && matchesSearch;
+    const matchesTag =
+      !tagSearch ||
+      expense.tags.some((tag) =>
+        tag.toLowerCase().includes(tagSearch.toLowerCase())
+      );
+
+    return matchesCategory && matchesSearch && matchesTag;
   });
 
   const sortedExpenses = [...filteredExpenses];
@@ -228,6 +235,8 @@ function App() {
             setSearchTerm={setSearchTerm}
             sort={sort}
             setSort={setSort}
+            tagSearch={tagSearch}
+            setTagSearch={setTagSearch}
           />
         </div>
         <ExpenseList

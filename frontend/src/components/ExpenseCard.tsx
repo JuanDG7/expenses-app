@@ -10,8 +10,8 @@ export function ExpenseCard({ expense, onDelete, onEdit }: ExpenseCardProps) {
   return (
     <div className="rounded-xl border p-5 shadow-sm">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold">{expense.title}</h2>
-        <p className="text-sm text-gray-500">{expense.category}</p>
+        <h2 className="text-xl font-semibold">Titulo:{expense.title}</h2>
+        <p className="text-sm text-gray-500">Categoria:{expense.category}</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {expense.tags.map((tag) => (
             <span

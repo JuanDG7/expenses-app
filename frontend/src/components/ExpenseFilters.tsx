@@ -8,6 +8,8 @@ interface ExpenseFiltersProps {
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   sort: string;
   setSort: React.Dispatch<React.SetStateAction<string>>;
+  tagSearch: string;
+  setTagSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function ExpenseFilters({
@@ -17,6 +19,8 @@ export function ExpenseFilters({
   setSearchTerm,
   sort,
   setSort,
+  tagSearch,
+  setTagSearch,
 }: ExpenseFiltersProps) {
   return (
     <>
@@ -37,6 +41,13 @@ export function ExpenseFilters({
             ))}
           </select>
         </div>
+        <input
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-3 mb-3"
+          type="text"
+          placeholder="🏷️ Buscar tag..."
+          value={tagSearch}
+          onChange={(e) => setTagSearch(e.target.value)}
+        />
 
         <div className="grid grid-cols-2 gap-2 ">
           <button
