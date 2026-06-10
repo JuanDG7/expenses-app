@@ -173,6 +173,8 @@ function App() {
 
   const sortedExpenses = [...filteredExpenses];
 
+  const uniqueTags = [...new Set(expenses.flatMap((expense) => expense.tags))];
+
   if (sort === "Monto mayor") {
     sortedExpenses.sort((a, b) => (b.amount || 0) - (a.amount || 0));
   }
@@ -228,6 +230,7 @@ function App() {
         {" "}
         <div className="w-64">
           {" "}
+          {uniqueTags.length}
           <ExpenseFilters
             setSelectedCategory={setSelectedCategory}
             selectedCategory={selectedCategory}
@@ -237,6 +240,7 @@ function App() {
             setSort={setSort}
             tagSearch={tagSearch}
             setTagSearch={setTagSearch}
+            uniqueTags={uniqueTags}
           />
         </div>
         <ExpenseList

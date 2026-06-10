@@ -10,6 +10,7 @@ interface ExpenseFiltersProps {
   setSort: React.Dispatch<React.SetStateAction<string>>;
   tagSearch: string;
   setTagSearch: React.Dispatch<React.SetStateAction<string>>;
+  uniqueTags: string[];
 }
 
 export function ExpenseFilters({
@@ -21,6 +22,7 @@ export function ExpenseFilters({
   setSort,
   tagSearch,
   setTagSearch,
+  uniqueTags,
 }: ExpenseFiltersProps) {
   return (
     <>
@@ -48,6 +50,14 @@ export function ExpenseFilters({
           value={tagSearch}
           onChange={(e) => setTagSearch(e.target.value)}
         />
+
+        <div className="my-5 flex flex-wrap gap-2">
+          {uniqueTags.map((tag) => (
+            <button key={tag} type="button" onClick={() => setTagSearch(tag)}>
+              #{tag}
+            </button>
+          ))}
+        </div>
 
         <div className="grid grid-cols-2 gap-2 ">
           <button
