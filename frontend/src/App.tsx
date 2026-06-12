@@ -10,6 +10,7 @@ import type { CreateExpense, Expense, UpdateExpense } from "./types/expense";
 import { ExpenseForm } from "./components/ExpenseForm";
 import { ExpenseList } from "./components/ExpenseList";
 import { ExpenseFilters } from "./components/ExpenseFilters";
+import { ExpenseStats } from "./components/ExpenseStats";
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -173,6 +174,13 @@ function App() {
     return matchesCategory && matchesSearch && matchesTag;
   });
 
+  const totalAmount = filteredExpenses.reduce(
+    (acc, expense) => acc + (expense.amount || 0),
+    0
+  );
+
+  const filteredExpensesCount = filteredExpenses.length;
+
   const sortedExpenses = [...filteredExpenses];
 
   const uniqueTags = [...new Set(expenses.flatMap((expense) => expense.tags))];
@@ -231,8 +239,6 @@ function App() {
       <div className="flex gap-6">
         {" "}
         <div className="w-64">
-          {" "}
-          {uniqueTags.length}
           <ExpenseFilters
             setSelectedCategory={setSelectedCategory}
             selectedCategory={selectedCategory}
@@ -245,11 +251,18 @@ function App() {
             uniqueTags={uniqueTags}
           />
         </div>
-        <ExpenseList
-          filteredExpenses={sortedExpenses}
-          handleDelete={handleDelete}
-          handleStartEdit={handleStartEdit}
-        />
+        <div>
+          {" "}
+          <ExpenseStats
+            filteredExpensesCount={filteredExpensesCount}
+            totalAmount={totalAmount}
+          />
+          <ExpenseList
+            filteredExpenses={sortedExpenses}
+            handleDelete={handleDelete}
+            handleStartEdit={handleStartEdit}
+          />
+        </div>
       </div>
     </main>
   );
