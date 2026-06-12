@@ -11,6 +11,7 @@ import { ExpenseForm } from "./components/ExpenseForm";
 import { ExpenseList } from "./components/ExpenseList";
 import { ExpenseFilters } from "./components/ExpenseFilters";
 import { ExpenseStats } from "./components/ExpenseStats";
+import { ExpenseCategoryStats } from "./components/ExpenseCategoryStats";
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -181,6 +182,15 @@ function App() {
 
   const filteredExpensesCount = filteredExpenses.length;
 
+  const amountByCategory = filteredExpenses.reduce((acc, expense) => {
+    const category = expense.category || "No tiene categoria";
+
+    acc[category] = (acc[category] || 0) + (expense.amount || 0);
+
+    return acc;
+  }, {} as Record<string, number>);
+
+  console.log(amountByCategory);
   const sortedExpenses = [...filteredExpenses];
 
   const uniqueTags = [...new Set(expenses.flatMap((expense) => expense.tags))];
@@ -262,6 +272,7 @@ function App() {
             handleDelete={handleDelete}
             handleStartEdit={handleStartEdit}
           />
+          <ExpenseCategoryStats amountByCategory={amountByCategory} />
         </div>
       </div>
     </main>
