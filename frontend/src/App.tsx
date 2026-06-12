@@ -165,7 +165,9 @@ function App() {
     const matchesTag =
       !tagSearch ||
       expense.tags.some((tag) =>
-        tag.toLowerCase().includes(tagSearch.toLowerCase())
+        tagSearch
+          .split(" ")
+          .every((word) => tag.toLowerCase().includes(word.toLowerCase()))
       );
 
     return matchesCategory && matchesSearch && matchesTag;
