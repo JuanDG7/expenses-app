@@ -1,9 +1,11 @@
 interface ExpenseCategoryStatsProps {
   amountByCategory: Record<string, number>;
+  totalAmount: number;
 }
 
 export function ExpenseCategoryStats({
   amountByCategory,
+  totalAmount,
 }: ExpenseCategoryStatsProps) {
   return (
     <div>
@@ -11,11 +13,14 @@ export function ExpenseCategoryStats({
 
       {Object.entries(amountByCategory)
         .sort((a, b) => b[1] - a[1])
-        .map(([category, amount]) => (
-          <p key={category}>
-            {category}: Gs. {amount}
-          </p>
-        ))}
+        .map(([category, amount]) => {
+          const percentage = (amount / totalAmount) * 100;
+          return (
+            <p key={category}>
+              {category}: Gs. {amount} ({percentage.toFixed(1)}%)
+            </p>
+          );
+        })}
     </div>
   );
 }

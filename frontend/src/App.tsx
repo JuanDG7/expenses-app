@@ -272,7 +272,10 @@ function App() {
             handleDelete={handleDelete}
             handleStartEdit={handleStartEdit}
           />
-          <ExpenseCategoryStats amountByCategory={amountByCategory} />
+          <ExpenseCategoryStats
+            amountByCategory={amountByCategory}
+            totalAmount={totalAmount}
+          />
         </div>
       </div>
     </main>
