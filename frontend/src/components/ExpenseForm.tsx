@@ -1,4 +1,5 @@
 import { CATEGORIES } from "../constants/categories";
+import { formatGuarani } from "../utils/formatGuarani";
 
 export interface ExpenseFormProps {
   title: string;
@@ -51,17 +52,21 @@ export function ExpenseForm({
         <input
           className="rounded-lg border p-3"
           type="text"
-          placeholder="Título"
+          placeholder="Titulo"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <input
           className="rounded-lg border p-3"
-          type="number"
+          type="text"
+          inputMode="numeric"
           placeholder="Monto"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={amount ? formatGuarani(Number(amount)) : ""}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, "");
+            setAmount(value);
+          }}
         />
 
         <div>

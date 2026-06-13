@@ -1,3 +1,5 @@
+import { formatGuarani } from "../utils/formatGuarani";
+
 interface ExpenseCategoryStatsProps {
   amountByCategory: Record<string, number>;
   totalAmount: number;
@@ -17,7 +19,8 @@ export function ExpenseCategoryStats({
           const percentage = (amount / totalAmount) * 100;
           return (
             <p key={category}>
-              {category}: Gs. {amount} ({percentage.toFixed(1)}%)
+              {category}: {formatGuarani(amount)} ({percentage.toFixed(1)}
+              %)
             </p>
           );
         })}

@@ -1,4 +1,5 @@
 import type { Expense } from "../types/expense";
+import { formatGuarani } from "../utils/formatGuarani";
 
 interface ExpenseCardProps {
   expense: Expense;
@@ -25,7 +26,7 @@ export function ExpenseCard({ expense, onDelete, onEdit }: ExpenseCardProps) {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-2xl font-bold">${expense.amount}</p>
+        <p className="text-2xl font-bold">{formatGuarani(expense.amount)}</p>
 
         <div className="flex gap-2">
           <button
