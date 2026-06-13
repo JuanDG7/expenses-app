@@ -9,11 +9,13 @@ export function ExpenseCategoryStats({
     <div>
       <h2>Gastos por categoría</h2>
 
-      {Object.entries(amountByCategory).map(([category, amount]) => (
-        <p key={category}>
-          {category}: Gs. {amount}
-        </p>
-      ))}
+      {Object.entries(amountByCategory)
+        .sort((a, b) => b[1] - a[1])
+        .map(([category, amount]) => (
+          <p key={category}>
+            {category}: Gs. {amount}
+          </p>
+        ))}
     </div>
   );
 }
