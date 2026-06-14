@@ -190,6 +190,12 @@ function App() {
     return acc;
   }, {} as Record<string, number>);
 
+  const countByCategory = filteredExpenses.reduce((acc, expense) => {
+    const category = expense.category || "Categoria no existe";
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   console.log(amountByCategory);
   const sortedExpenses = [...filteredExpenses];
 
@@ -275,6 +281,7 @@ function App() {
           <ExpenseCategoryStats
             amountByCategory={amountByCategory}
             totalAmount={totalAmount}
+            countByCategory={countByCategory}
           />
         </div>
       </div>

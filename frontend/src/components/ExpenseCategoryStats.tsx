@@ -3,11 +3,13 @@ import { formatGuarani } from "../utils/formatGuarani";
 interface ExpenseCategoryStatsProps {
   amountByCategory: Record<string, number>;
   totalAmount: number;
+  countByCategory: Record<string, number>;
 }
 
 export function ExpenseCategoryStats({
   amountByCategory,
   totalAmount,
+  countByCategory,
 }: ExpenseCategoryStatsProps) {
   return (
     <div>
@@ -17,10 +19,11 @@ export function ExpenseCategoryStats({
         .sort((a, b) => b[1] - a[1])
         .map(([category, amount]) => {
           const percentage = (amount / totalAmount) * 100;
+
           return (
             <p key={category}>
-              {category}: {formatGuarani(amount)} ({percentage.toFixed(1)}
-              %)
+              {category}: {formatGuarani(amount)} ({percentage.toFixed(1)} - %)
+              - {countByCategory[category]} gastos
             </p>
           );
         })}
