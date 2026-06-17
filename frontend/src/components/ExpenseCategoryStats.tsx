@@ -1,4 +1,4 @@
-import { formatGuarani } from "../utils/formatGuarani";
+import { CategoryStatCard } from "./CategoryStatCard";
 
 interface ExpenseCategoryStatsProps {
   amountByCategory: Record<string, number>;
@@ -21,10 +21,13 @@ export function ExpenseCategoryStats({
           const percentage = (amount / totalAmount) * 100;
 
           return (
-            <p key={category}>
-              {category}: {formatGuarani(amount)} ({percentage.toFixed(1)} - %)
-              - {countByCategory[category]} gastos
-            </p>
+            <CategoryStatCard
+              key={category}
+              category={category}
+              amount={amount}
+              percentage={percentage}
+              countByCategory={countByCategory[category]}
+            />
           );
         })}
     </div>
