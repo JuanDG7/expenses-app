@@ -11,6 +11,10 @@ interface ExpenseFiltersProps {
   tagSearch: string;
   setTagSearch: React.Dispatch<React.SetStateAction<string>>;
   uniqueTags: string[];
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function ExpenseFilters({
@@ -23,6 +27,10 @@ export function ExpenseFilters({
   tagSearch,
   setTagSearch,
   uniqueTags,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
 }: ExpenseFiltersProps) {
   return (
     <>
@@ -50,7 +58,6 @@ export function ExpenseFilters({
           value={tagSearch}
           onChange={(e) => setTagSearch(e.target.value)}
         />
-
         <div className="my-5 flex flex-wrap gap-2">
           {uniqueTags.map((tag) => (
             <button key={tag} type="button" onClick={() => setTagSearch(tag)}>
@@ -58,7 +65,22 @@ export function ExpenseFilters({
             </button>
           ))}
         </div>
-
+        <div>
+          <label htmlFor="desde">Desde </label>
+          <input
+            type="date"
+            id="desde"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <label htmlFor="hasta">Hasta </label>
+          <input
+            type="date"
+            id="hasta"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
         <div className="grid grid-cols-2 gap-2 ">
           <button
             type="button"

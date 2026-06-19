@@ -29,6 +29,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("Mas recientes");
   const [tagSearch, setTagSearch] = useState<string>("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   useEffect(() => {
     async function loadExpenses() {
       try {
@@ -166,6 +168,8 @@ function App() {
     searchTerm,
     tagSearch,
     sort,
+    startDate,
+    endDate,
   });
   if (loading) return <p>Cargando...</p>;
 
@@ -205,6 +209,10 @@ function App() {
             tagSearch={tagSearch}
             setTagSearch={setTagSearch}
             uniqueTags={uniqueTags}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
           />
         </div>
         <div>

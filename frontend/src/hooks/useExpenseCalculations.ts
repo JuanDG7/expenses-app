@@ -5,6 +5,8 @@ interface UseExpenseCalculationsProps {
   searchTerm: string;
   tagSearch: string;
   sort: string;
+  startDate: string;
+  endDate: string;
 }
 
 export function useExpenseCalculations({
@@ -13,6 +15,8 @@ export function useExpenseCalculations({
   searchTerm,
   tagSearch,
   sort,
+  startDate,
+  endDate,
 }: UseExpenseCalculationsProps) {
   const filteredExpenses = expenses.filter((expense) => {
     const matchesCategory =
@@ -29,8 +33,15 @@ export function useExpenseCalculations({
           .split(" ")
           .every((word) => tag.toLowerCase().includes(word.toLowerCase()))
       );
+    const expenseDate = new Intl.DateTimeFormat("en-CA").format(
+      new Date(expense.date)
+    );
 
-    return matchesCategory && matchesSearch && matchesTag;
+    const matchesDate =
+      (!startDate || expenseDate >= startDate) &&
+      (!endDate || expenseDate <= endDate);
+
+    return matchesCategory && matchesSearch && matchesTag && matchesDate;
   });
 
   const totalAmount = filteredExpenses.reduce(
@@ -54,7 +65,6 @@ export function useExpenseCalculations({
     return acc;
   }, {} as Record<string, number>);
 
-  console.log(amountByCategory);
   const sortedExpenses = [...filteredExpenses];
 
   const uniqueTags = [...new Set(expenses.flatMap((expense) => expense.tags))];

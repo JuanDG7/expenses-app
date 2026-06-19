@@ -13,6 +13,9 @@ export function ExpenseCard({ expense, onDelete, onEdit }: ExpenseCardProps) {
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Titulo:{expense.title}</h2>
         <p className="text-sm text-gray-500">Categoria:{expense.category}</p>
+        <p className="text-sm text-gray-500">
+          Fecha:{new Date(expense.created_at).toLocaleDateString()}
+        </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {expense.tags.map((tag) => (
             <span
