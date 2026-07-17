@@ -69,7 +69,7 @@ Content-Type: application/json
   "category": "Food",
   "hack": "123"
 }
-
+#############################################################
 ### Update parcial OK
 PATCH http://localhost:8080/api/expenses/4
 Content-Type: application/json
@@ -77,12 +77,37 @@ Content-Type: application/json
 {
   "amount": 99999
 }
-
+#############################################################
 ### Error - update vacío
 PATCH http://localhost:8080/api/expenses/4
 Content-Type: application/json
 
 {}
-
+#############################################################
 ###
 GET http://localhost:8080/api/expenses?page=1&limit=10
+
+#############################################################
+###Crear presupuesto mensual test
+POST HTTP://LOCALHOST:8080/api/monthly-budgets
+CONTENT-TYPE:application/json
+
+{
+  "amount":5000000,
+  "month":"2026-07-01"
+}
+
+#############################################################
+###Obtener el presupuesto mensual
+GET http://localhost:8080/api/monthly-budgets/2026-07-01
+
+
+#################################################
+###Update del presupuesto mensual
+
+PATCH http://localhost:8080/api/monthly-budgets/2026-07-01
+CONTENT-TYPE:application/json
+
+{
+  "amount":4500000
+}

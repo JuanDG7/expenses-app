@@ -26,3 +26,58 @@ export const getMonthlyBudget = async (
     next(err);
   }
 };
+export const createMonthlyBudget = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { amount, month } = req.body;
+
+    const result = await pool.query(
+      `
+        INSERT INTO monthly_budgets (amount,month)
+        VALUES ($1,$2) RETURNING *`,
+      [amount, month]
+    );
+
+    res.status(201).json({
+      ...result.rows[0],
+      amount: Number(result.rows[0].amount),
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateMonthlyBudget = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { month } = req.params;
+    const { amount } = req.body;
+
+    const result = await pool.query(
+      `
+      UPDATE monthly_budgets
+      SET amount=$1, updated_at=NOW()
+      WHERE month=$2 RETURNING *`,
+      [amount, month]
+    );
+
+    if (!result.rows[0]) {
+      return res.status(404).json({
+        message: "Monthly budget not found",
+      });
+    }
+
+    res.json({
+      ...result.rows[0],
+      amount: Number(result.rows[0].amount),
+    });
+  } catch (err) {
+    next(err);
+  }
+};

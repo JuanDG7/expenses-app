@@ -4,7 +4,7 @@ import path from "path";
 import cors from "cors";
 import type { Request, Response, NextFunction } from "express";
 import expensesRoutes from "./routes/expenses.routes";
-
+import monthlyBudgetRoutes from "./routes/montlyBudgets.routes";
 dotenv.config();
 
 const app = express();
@@ -32,6 +32,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api", expensesRoutes);
+app.use("/api", monthlyBudgetRoutes);
 
 // GLOBAL ERROR MIDDLEWARE
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
