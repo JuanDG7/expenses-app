@@ -44,26 +44,34 @@ export function useExpenseCalculations({
     return matchesCategory && matchesSearch && matchesTag && matchesDate;
   });
 
-  const totalAmount = filteredExpenses.reduce(
-    (acc, expense) => acc + (expense.amount || 0),
-    0
-  );
+  const totalExpenses = filteredExpenses
+    .filter((expense) => expense.type === "expense")
+    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
+
+  const totalIncome = filteredExpenses
+    .filter((expense) => expense.type === "income")
+    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
+  const balance = totalIncome - totalExpenses;
 
   const filteredExpensesCount = filteredExpenses.length;
 
-  const amountByCategory = filteredExpenses.reduce((acc, expense) => {
-    const category = expense.category || "No tiene categoria";
+  const amountByCategory = filteredExpenses
+    .filter((expense) => expense.type === "expense")
+    .reduce((acc, expense) => {
+      const category = expense.category || "No tiene categoria";
 
-    acc[category] = (acc[category] || 0) + (expense.amount || 0);
+      acc[category] = (acc[category] || 0) + (expense.amount || 0);
 
-    return acc;
-  }, {} as Record<string, number>);
+      return acc;
+    }, {} as Record<string, number>);
 
-  const countByCategory = filteredExpenses.reduce((acc, expense) => {
-    const category = expense.category || "Categoria no existe";
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const countByCategory = filteredExpenses
+    .filter((expense) => expense.type === "expense")
+    .reduce((acc, expense) => {
+      const category = expense.category || "Categoria no existe";
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
   const sortedExpenses = [...filteredExpenses];
 
@@ -101,7 +109,10 @@ export function useExpenseCalculations({
 
   return {
     filteredExpensesCount,
-    totalAmount,
+    totalAmount: totalExpenses,
+    totalExpenses,
+    totalIncome,
+    balance,
     countByCategory,
     uniqueTags,
     sortedExpenses,

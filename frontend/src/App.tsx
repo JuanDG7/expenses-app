@@ -6,7 +6,12 @@ import {
   updateExpense,
 } from "./api/expensesApi";
 
-import type { CreateExpense, Expense, UpdateExpense } from "./types/expense";
+import type {
+  CreateExpense,
+  Expense,
+  UpdateExpense,
+  TransactionType,
+} from "./types/expense";
 import { ExpenseForm } from "./components/ExpenseForm";
 import { ExpenseList } from "./components/ExpenseList";
 import { ExpenseFilters } from "./components/ExpenseFilters";
@@ -22,6 +27,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [type, setType] = useState<TransactionType>("expense");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagsInput, setTagsInput] = useState("");
@@ -63,6 +69,7 @@ function App() {
   async function handleCreate() {
     const expenseData: CreateExpense = {
       title,
+      type,
     };
 
     if (amount) {
@@ -84,6 +91,7 @@ function App() {
   async function handleUpdate() {
     if (!editingId) return;
     const updateData: UpdateExpense = {};
+    updateData.type = type;
 
     if (title) {
       updateData.title = title;
@@ -125,6 +133,7 @@ function App() {
       setCategory("");
       setTags([]);
       setTagsInput("");
+      setType("expense");
     } catch (err) {
       console.error(err);
     }
@@ -153,11 +162,15 @@ function App() {
     setAmount(expense.amount ? String(expense.amount) : "");
     setCategory(expense.category || "");
     setTags(expense.tags);
+    setType(expense.type);
   }
 
   const {
     filteredExpensesCount,
     totalAmount,
+    totalExpenses,
+    totalIncome,
+    balance,
     countByCategory,
     uniqueTags,
     sortedExpenses,
@@ -177,7 +190,7 @@ function App() {
 
   console.log(sort);
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-6">
+    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-1 p-6">
       <ExpenseForm
         title={title}
         setTitle={setTitle}
@@ -194,6 +207,8 @@ function App() {
         editingId={editingId}
         setEditingId={setEditingId}
         handleRemoveTag={handleRemoveTag}
+        type={type}
+        setType={setType}
       />
 
       <div className="flex gap-6">
@@ -219,7 +234,9 @@ function App() {
           {" "}
           <ExpenseStats
             filteredExpensesCount={filteredExpensesCount}
-            totalAmount={totalAmount}
+            totalExpenses={totalExpenses}
+            totalIncome={totalIncome}
+            balance={balance}
           />
           <ExpenseList
             filteredExpenses={sortedExpenses}

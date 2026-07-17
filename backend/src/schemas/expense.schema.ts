@@ -17,6 +17,7 @@ export const createExpenseSchema = z
     title: z.string().min(1, "Title is required").max(50, "Max 50 characters"),
 
     amount: z.coerce.number().positive("Amount must be > 0").optional(),
+    type: z.enum(["expense", "income"]).optional(),
 
     category: z.enum(CATEGORIES).optional(),
 

@@ -1,5 +1,6 @@
 import { CATEGORIES } from "../constants/categories";
 import { formatGuarani } from "../utils/formatGuarani";
+import type { TransactionType } from "../types/expense";
 
 export interface ExpenseFormProps {
   title: string;
@@ -22,6 +23,8 @@ export interface ExpenseFormProps {
   handleRemoveTag: (tagToRemove: string) => void;
   editingId: number | null;
   setEditingId: React.Dispatch<React.SetStateAction<number | null>>;
+  type: TransactionType;
+  setType: React.Dispatch<React.SetStateAction<TransactionType>>;
 }
 
 export function ExpenseForm({
@@ -40,15 +43,43 @@ export function ExpenseForm({
   handleRemoveTag,
   editingId,
   setEditingId,
+  type,
+  setType,
 }: ExpenseFormProps) {
   return (
     <>
       {" "}
-      <h2 className="mb-4 text-xl font-semibold">Nuevo gasto</h2>
+      <h2 className=" text-xl font-semibold">Mis Gastos</h2>
+      <h3>Registra y controla tus gastos</h3>
       <form
         className="flex flex-col gap-3 rounded-xl border p-6 shadow-sm "
         onSubmit={handleSubmit}
       >
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setType("expense")}
+            className={`rounded-lg border p-3 ${
+              type === "expense"
+                ? "bg-[#D8544F] text-white"
+                : "bg-white text-black"
+            }`}
+          >
+            Gasto
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setType("income")}
+            className={`rounded-lg border p-3 ${
+              type === "income"
+                ? "bg-[#007A33] text-white"
+                : "bg-white text-black"
+            }`}
+          >
+            Ingreso
+          </button>
+        </div>
         <input
           className="rounded-lg border p-3"
           type="text"
@@ -128,6 +159,7 @@ export function ExpenseForm({
               setCategory("");
               setTags([]);
               setTagsInput("");
+              setType("expense");
             }}
           >
             Cancelar edición

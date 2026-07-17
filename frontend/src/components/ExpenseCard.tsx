@@ -29,7 +29,14 @@ export function ExpenseCard({ expense, onDelete, onEdit }: ExpenseCardProps) {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-2xl font-bold">{formatGuarani(expense.amount)}</p>
+        <p
+          className={`text-2xl font-bold ${
+            expense.type === "income" ? "text-[#007A33]" : "text-[#D8544F]"
+          }`}
+        >
+          {expense.type === "income" ? "+" : "-"}{" "}
+          {formatGuarani(expense.amount)}
+        </p>
 
         <div className="flex gap-2">
           <button
