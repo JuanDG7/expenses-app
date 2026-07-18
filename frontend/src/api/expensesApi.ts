@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "./api";
 import type { CreateExpense, Expense, UpdateExpense } from "../types/expense";
 
 type GetExpensesResponse = {
@@ -10,10 +10,6 @@ type GetExpensesResponse = {
     totalPages: number;
   };
 };
-
-const api = axios.create({
-  baseURL: "http://localhost:8080/api",
-});
 
 export async function getExpenses(): Promise<Expense[]> {
   const response = await api.get<GetExpensesResponse>("/expenses");
