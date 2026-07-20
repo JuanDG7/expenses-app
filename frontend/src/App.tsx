@@ -6,23 +6,42 @@ import {
   updateExpense,
 } from "./api/expensesApi";
 
+import {
+  getMonthlyBudget,
+  createMonthlyBudget,
+  updateMonthlyBudget,
+  deleteMonthlyBudget,
+} from "./api/monthlyBudgetsApi";
+
 import type {
   CreateExpense,
   Expense,
   UpdateExpense,
   TransactionType,
 } from "./types/expense";
+import type { MonthlyBudget } from "./types/monthlyBudget";
+
 import { ExpenseForm } from "./components/ExpenseForm";
 import { ExpenseList } from "./components/ExpenseList";
 import { ExpenseFilters } from "./components/ExpenseFilters";
 import { ExpenseStats } from "./components/ExpenseStats";
 import { ExpenseCategoryStats } from "./components/ExpenseCategoryStats";
 import { useExpenseCalculations } from "./hooks/useExpenseCalculations";
+import { MonthlyBudgetForm } from "./components/MonthlyBudgetForm";
+
+const monthFormatter = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+});
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [budget, setBudget] = useState<MonthlyBudget | null>(null);
+  const [budgetInput, setBudgetInput] = useState("");
+  const currentMonth = `${monthFormatter.format(new Date())}-01`;
 
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
@@ -52,6 +71,58 @@ function App() {
 
     loadExpenses();
   }, []);
+
+  useEffect(() => {
+    async function loadMonthlyBudget() {
+      try {
+        const data = await getMonthlyBudget(currentMonth);
+        setBudget(data);
+        setBudgetInput(data ? String(data.amount) : "");
+      } catch (err) {
+        console.error(err);
+        setError("error al cargar el presupuesto");
+      }
+    }
+    loadMonthlyBudget();
+  }, [currentMonth]);
+
+  async function handleBudgetSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!budgetInput.trim()) return;
+    try {
+      const amount = Number(budgetInput);
+
+      const savedBudget = budget
+        ? await updateMonthlyBudget(currentMonth, { amount })
+        : await createMonthlyBudget({
+            amount,
+            month: currentMonth,
+          });
+      setBudget(savedBudget);
+      setBudgetInput(String(savedBudget.amount));
+    } catch (err) {
+      console.error(err);
+      setError("error al guardar el presupuesto");
+    }
+  }
+
+  async function handleBudgetDelete() {
+    if (!budget) return;
+
+    const confirmed = window.confirm("¿Eliminar el presupuesto mensual?");
+
+    if (!confirmed) return;
+
+    try {
+      await deleteMonthlyBudget(currentMonth);
+
+      setBudget(null);
+      setBudgetInput("");
+    } catch (err) {
+      console.error(err);
+      setError("Error al eliminar el presupuesto");
+    }
+  }
 
   function handleAddTag() {
     const newTag = tagsInput.trim().toLowerCase();
@@ -191,6 +262,13 @@ function App() {
   console.log(sort);
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-1 p-6">
+      <MonthlyBudgetForm
+        budgetInput={budgetInput}
+        setBudgetInput={setBudgetInput}
+        handleBudgetSubmit={handleBudgetSubmit}
+        handleBudgetDelete={handleBudgetDelete}
+        hasBudget={budget !== null}
+      />
       <ExpenseForm
         title={title}
         setTitle={setTitle}

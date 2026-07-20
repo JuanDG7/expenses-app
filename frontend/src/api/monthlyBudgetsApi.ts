@@ -31,3 +31,7 @@ export async function updateMonthlyBudget(
 
   return response.data;
 }
+
+export async function deleteMonthlyBudget(month: string): Promise<void> {
+  await api.delete(`/monthly-budgets/${month}`);
+}

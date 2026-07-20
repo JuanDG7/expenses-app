@@ -3,6 +3,7 @@ import {
   getMonthlyBudget,
   createMonthlyBudget,
   updateMonthlyBudget,
+  deleteMonthlyBudget,
 } from "../controllers/monthlyBudgets.controller";
 import { validate } from "../middlewares/validate";
 import {
@@ -30,6 +31,12 @@ router.patch(
   validate(monthlyBudgetMonthParamSchema, "params"),
   validate(updateMonthlyBudgetSchema),
   updateMonthlyBudget
+);
+
+router.delete(
+  "/monthly-budgets/:month",
+  validate(monthlyBudgetMonthParamSchema, "params"),
+  deleteMonthlyBudget
 );
 
 export default router;

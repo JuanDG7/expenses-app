@@ -81,3 +81,30 @@ export const updateMonthlyBudget = async (
     next(err);
   }
 };
+
+export const deleteMonthlyBudget = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { month } = req.params;
+
+    const result = await pool.query(
+      `DELETE FROM monthly_budgets
+       WHERE month = $1
+       RETURNING *`,
+      [month]
+    );
+
+    if (!result.rows[0]) {
+      return res.status(404).json({
+        message: "Monthly budget not found",
+      });
+    }
+
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
