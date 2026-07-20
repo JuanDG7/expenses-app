@@ -4,26 +4,25 @@ interface ExpenseStatsProps {
   filteredExpensesCount: number;
   totalExpenses: number;
   totalIncome: number;
-  balance: number;
+  monthlyBudget: number;
+  availableBalance: number;
 }
 
 export function ExpenseStats({
   filteredExpensesCount,
   totalExpenses,
   totalIncome,
-  balance,
+  monthlyBudget,
+  availableBalance,
 }: ExpenseStatsProps) {
   return (
     <>
-      <>
-        <p className="text-[#D8544F]">Gastos: {formatGuarani(totalExpenses)}</p>
-
-        <p className="text-[#007A33]">Ingresos: {formatGuarani(totalIncome)}</p>
-
-        <p>Saldo: {formatGuarani(balance)}</p>
-
-        <p>Resultados: {filteredExpensesCount}</p>
-      </>
+      {" "}
+      <p>Saldo disponible: {formatGuarani(availableBalance)}</p>
+      <p>Presupuesto mensual: {formatGuarani(monthlyBudget)}</p>
+      <p className="text-[#007A33]">Ingresos: {formatGuarani(totalIncome)}</p>
+      <p className="text-[#D8544F]">Gastos: {formatGuarani(totalExpenses)}</p>
+      <p>Resultados: {filteredExpensesCount}</p>
     </>
   );
 }

@@ -239,13 +239,14 @@ function App() {
   const {
     filteredExpensesCount,
     totalAmount,
-    totalExpenses,
-    totalIncome,
-    balance,
+
     countByCategory,
     uniqueTags,
     sortedExpenses,
     amountByCategory,
+    monthlyTotalExpenses,
+    monthlyTotalIncome,
+    monthlyBalance,
   } = useExpenseCalculations({
     expenses,
     selectedCategory,
@@ -254,81 +255,88 @@ function App() {
     sort,
     startDate,
     endDate,
+    currentMonth,
   });
+
+  const availableBalance = (budget?.amount ?? 0) + monthlyBalance;
   if (loading) return <p>Cargando...</p>;
 
   if (error) return <p>{error}</p>;
 
   console.log(sort);
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-1 p-6">
-      <MonthlyBudgetForm
-        budgetInput={budgetInput}
-        setBudgetInput={setBudgetInput}
-        handleBudgetSubmit={handleBudgetSubmit}
-        handleBudgetDelete={handleBudgetDelete}
-        hasBudget={budget !== null}
-      />
-      <ExpenseForm
-        title={title}
-        setTitle={setTitle}
-        amount={amount}
-        setAmount={setAmount}
-        category={category}
-        setCategory={setCategory}
-        tags={tags}
-        setTags={setTags}
-        tagsInput={tagsInput}
-        setTagsInput={setTagsInput}
-        handleSubmit={handleSubmit}
-        handleAddTag={handleAddTag}
-        editingId={editingId}
-        setEditingId={setEditingId}
-        handleRemoveTag={handleRemoveTag}
-        type={type}
-        setType={setType}
-      />
+    <div className=" min-h-screen bg-zinc-700 p-6">
+      {" "}
+      <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-1 p-6 bg-zinc-800">
+        <MonthlyBudgetForm
+          budgetInput={budgetInput}
+          setBudgetInput={setBudgetInput}
+          handleBudgetSubmit={handleBudgetSubmit}
+          handleBudgetDelete={handleBudgetDelete}
+          hasBudget={budget !== null}
+        />
+        <ExpenseForm
+          title={title}
+          setTitle={setTitle}
+          amount={amount}
+          setAmount={setAmount}
+          category={category}
+          setCategory={setCategory}
+          tags={tags}
+          setTags={setTags}
+          tagsInput={tagsInput}
+          setTagsInput={setTagsInput}
+          handleSubmit={handleSubmit}
+          handleAddTag={handleAddTag}
+          editingId={editingId}
+          setEditingId={setEditingId}
+          handleRemoveTag={handleRemoveTag}
+          type={type}
+          setType={setType}
+        />
 
-      <div className="flex gap-6">
-        {" "}
-        <div className="w-64">
-          <ExpenseFilters
-            setSelectedCategory={setSelectedCategory}
-            selectedCategory={selectedCategory}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            sort={sort}
-            setSort={setSort}
-            tagSearch={tagSearch}
-            setTagSearch={setTagSearch}
-            uniqueTags={uniqueTags}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-          />
-        </div>
-        <div>
+        <div className="flex gap-6">
           {" "}
-          <ExpenseStats
-            filteredExpensesCount={filteredExpensesCount}
-            totalExpenses={totalExpenses}
-            totalIncome={totalIncome}
-            balance={balance}
-          />
-          <ExpenseList
-            filteredExpenses={sortedExpenses}
-            handleDelete={handleDelete}
-            handleStartEdit={handleStartEdit}
-          />
-          <ExpenseCategoryStats
-            amountByCategory={amountByCategory}
-            totalAmount={totalAmount}
-            countByCategory={countByCategory}
-          />
+          <div className="w-64">
+            <ExpenseFilters
+              setSelectedCategory={setSelectedCategory}
+              selectedCategory={selectedCategory}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              sort={sort}
+              setSort={setSort}
+              tagSearch={tagSearch}
+              setTagSearch={setTagSearch}
+              uniqueTags={uniqueTags}
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+            />
+          </div>
+          <div>
+            {" "}
+            <ExpenseStats
+              filteredExpensesCount={filteredExpensesCount}
+              totalExpenses={monthlyTotalExpenses}
+              totalIncome={monthlyTotalIncome}
+              monthlyBudget={budget?.amount ?? 0}
+              availableBalance={availableBalance}
+            />
+            <ExpenseList
+              filteredExpenses={sortedExpenses}
+              handleDelete={handleDelete}
+              handleStartEdit={handleStartEdit}
+            />
+            <ExpenseCategoryStats
+              amountByCategory={amountByCategory}
+              totalAmount={totalAmount}
+              countByCategory={countByCategory}
+            />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

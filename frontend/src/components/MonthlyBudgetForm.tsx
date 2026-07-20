@@ -17,20 +17,21 @@ export function MonthlyBudgetForm({
     setBudgetInput(e.target.value);
   }
   return (
-    <form onSubmit={handleBudgetSubmit}>
+    <form onSubmit={handleBudgetSubmit} className="border p-5">
       <p>Presupuesto mensual</p>
 
       <input value={budgetInput} onChange={handleInput} />
-
-      <button type="submit">
-        {hasBudget ? "Actualizar presupuesto" : "Crear presupuesto"}
-      </button>
-
-      {hasBudget && (
-        <button type="button" onClick={handleBudgetDelete}>
-          Eliminar presupuesto
+      <div className="flex gap-5">
+        <button type="submit" className="border">
+          {hasBudget ? "Actualizar presupuesto" : "Crear presupuesto"}
         </button>
-      )}
+
+        {hasBudget && (
+          <button type="button" onClick={handleBudgetDelete} className="border">
+            Eliminar presupuesto
+          </button>
+        )}
+      </div>
     </form>
   );
 }

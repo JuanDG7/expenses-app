@@ -7,6 +7,7 @@ interface UseExpenseCalculationsProps {
   sort: string;
   startDate: string;
   endDate: string;
+  currentMonth: string;
 }
 
 export function useExpenseCalculations({
@@ -17,6 +18,7 @@ export function useExpenseCalculations({
   sort,
   startDate,
   endDate,
+  currentMonth,
 }: UseExpenseCalculationsProps) {
   const filteredExpenses = expenses.filter((expense) => {
     const matchesCategory =
@@ -43,6 +45,25 @@ export function useExpenseCalculations({
 
     return matchesCategory && matchesSearch && matchesTag && matchesDate;
   });
+
+  const monthlyExpenses = expenses.filter((expense) => {
+    const expenseMonth = new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+    }).format(new Date(expense.date));
+
+    return expenseMonth === currentMonth.slice(0, 7);
+  });
+
+  const monthlyTotalExpenses = monthlyExpenses
+    .filter((expense) => expense.type === "expense")
+    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
+
+  const monthlyTotalIncome = monthlyExpenses
+    .filter((expense) => expense.type === "income")
+    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
+
+  const monthlyBalance = monthlyTotalIncome - monthlyTotalExpenses;
 
   const totalExpenses = filteredExpenses
     .filter((expense) => expense.type === "expense")
@@ -113,6 +134,9 @@ export function useExpenseCalculations({
     totalExpenses,
     totalIncome,
     balance,
+    monthlyTotalExpenses,
+    monthlyTotalIncome,
+    monthlyBalance,
     countByCategory,
     uniqueTags,
     sortedExpenses,
